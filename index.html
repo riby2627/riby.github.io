@@ -207,7 +207,19 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <form>
+            <div
+              class="alert alert-success alert-dismissible fade show d-none my-alert"
+              role="alert"
+            >
+              <strong>Terimakasih</strong> pesan anda sudah kami terima :D
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            <form name="Contact-from">
               <div class="mb-3">
                 <label
                   for="name"
@@ -219,6 +231,7 @@
                   class="form-control"
                   id="name"
                   aria-describedby="name"
+                  neme="nama"
                 />
               </div>
               <div class="mb-3">
@@ -232,6 +245,7 @@
                   class="form-control"
                   id="email"
                   aria-describedby="emailHelp"
+                  name="email"
                 />
               </div>
               <div class="mb-3">
@@ -244,13 +258,26 @@
                   class="form-control"
                   id="pesan"
                   rows="3"
+                  name="pesan"
                 ></textarea>
               </div>
               <button
                 type="submit"
-                class="btn btn-primary"
+                class="btn btn-primary btn-kirim"
               >
                 Kirim
+              </button>
+
+              <button
+                class="btn btn-primary btn-loading d-none"
+                type="button"
+                disabled
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+                <span role="status">Loading...</span>
               </button>
             </form>
           </div>
@@ -289,5 +316,33 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzwGrVOzSNfl-CO8kBIbAwFkw-EjiZPwNuVaKPRy65XSi1oPWM6rdQQ7lyy2LtGrtiR/exec';
+      const form = document.forms['Contact-from'];
+      const btnKirim = document.querySelector('.btn-kirim');
+      const btnLoading = document.querySelector('.btn-loading');
+      const myAlert = document.querySelector('.my-alert');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        //ketikkan tombol submit di klik
+        //tampilkan tombol loading, hilangkan tombol kirim
+        btnLoading.classList.toggle('d-none');
+        btnKirim.classList.toggle('d-none');
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+          .then((response) => {
+            //tampilkan tombol kirim,hilangkan tombol loading
+            btnLoading.classList.toggle('d-none');
+            btnKirim.classList.toggle('d-none');
+
+            //tampilkan Alert
+            myAlert.classList.toggle('d-none');
+            //reset form
+            form.reset();
+
+            console.log('Success!', response);
+          })
+          .catch((error) => console.error('Error!', error.message));
+      });
+    </script>
   </body>
 </html>
